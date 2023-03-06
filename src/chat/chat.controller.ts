@@ -45,13 +45,15 @@ export class ChatController {
     return this.messageService.getMessagesByConversation(id);
   }
 
-  @Patch('conversation/deleteUser')
+  @Delete('conversation/:conversationId/user/:userId')
   deleteUserFromConversation(
-    @Body() deleteUserFromConversationDTO: DeleteUserFromConversationDto,
+    @Param('conversationId', ParseMongoIdPipe) conversationId: string,
+    @Param('userId') memberId: number,
   ) {
-    return this.conversationService.deleteUserFromConversation(
-      deleteUserFromConversationDTO,
-    );
+    return this.conversationService.deleteUserFromConversation({
+      memberId,
+      conversationId,
+    });
   }
 
   @Delete('message/:id')
