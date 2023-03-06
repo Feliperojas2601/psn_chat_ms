@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 
 import { MessageService } from './message/message.service';
 import { ConversationService } from './conversation/conversation.service';
@@ -16,7 +7,6 @@ import { CreateConversationDto } from './conversation/DTO/createConversation.dto
 import { CreateMessageDto } from './message/DTO/createMessage.dto';
 
 import { ParseMongoIdPipe } from 'src/common/pipes/parseMongoId.pipe';
-import { DeleteUserFromConversationDto } from './conversation/DTO/deleteUserFromConversation.dto';
 
 @Controller('chat')
 export class ChatController {
