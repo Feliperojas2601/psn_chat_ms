@@ -11,6 +11,11 @@ export class Message {
   userId: number;
 
   @Prop({
+    required: [true, 'Message conversation id is required'],
+  })
+  conversationId: string;
+
+  @Prop({
     required: [true, 'Message content is required'],
   })
   content: string;

@@ -3,10 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { Message, MessageDocument } from './entity/message.entity';
-import {
-  Conversation,
-  ConversationDocument,
-} from '../conversation/entity/conversation.entity';
 
 import { CreateMessageDto } from './DTO/createMessage.dto';
 
@@ -14,30 +10,40 @@ import { CreateMessageDto } from './DTO/createMessage.dto';
 export class MessageService {
   constructor(
     @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
-    @InjectModel(Conversation.name)
-    private conversationModel: Model<ConversationDocument>,
   ) {}
 
   async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
     try {
-      const { conversationId } = createMessageDto;
       const message = await this.messageModel.create(createMessageDto);
-      this.conversationModel.findByIdAndUpdate(conversationId, {
-        $push: { Messages: message },
-      });
       return message;
     } catch (error) {
       this.handleException(error);
     }
   }
 
-  async deleteMessage(messageId: number): Promise<number> {
+  async getMessagesByConversation(conversationId: string): Promise<Message[]> {
     try {
-      this.messageModel.findByIdAndUpdate(messageId, {
-        active: false,
-        updateDate: Date.now,
+      const messages = await this.messageModel.find({
+        conversationId: conversationId,
+        active: true,
       });
-      return messageId;
+      return messages;
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
+  async deleteMessage(messageId: string): Promise<Message> {
+    try {
+      const message = await this.messageModel.findByIdAndUpdate(
+        messageId,
+        {
+          active: false,
+          updateDate: Date.now(),
+        },
+        { new: true },
+      );
+      return message;
     } catch (error) {
       this.handleException(error);
     }

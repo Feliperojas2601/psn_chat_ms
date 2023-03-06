@@ -2,7 +2,6 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { Message } from '../message/entity/message.entity';
 import {
   Conversation,
   ConversationDocument,
@@ -42,29 +41,19 @@ export class ConversationService {
     }
   }
 
-  async getMessagesByConversation(conversationId: string): Promise<Message[]> {
-    try {
-      const conversation = await this.conversationModel.findById(
-        conversationId,
-      );
-      return conversation.messages;
-    } catch (error) {
-      this.handleException(error);
-    }
-  }
-
   async deleteUserFromConversation(
     deleteUserFromConversationDTO: DeleteUserFromConversationDto,
-  ): Promise<number> {
+  ): Promise<Conversation> {
     try {
-      this.conversationModel.findByIdAndUpdate(
+      const conversation = await this.conversationModel.findByIdAndUpdate(
         deleteUserFromConversationDTO.conversationId,
         {
-          $pullAll: { membersId: deleteUserFromConversationDTO.memberId },
-          updateDate: Date.now,
+          $pull: { membersId: deleteUserFromConversationDTO.memberId },
+          updateDate: Date.now(),
         },
+        { new: true },
       );
-      return deleteUserFromConversationDTO.memberId;
+      return conversation;
     } catch (error) {
       this.handleException(error);
     }

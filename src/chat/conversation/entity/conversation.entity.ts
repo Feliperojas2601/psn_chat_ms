@@ -14,11 +14,6 @@ export class Conversation {
   membersId: number[];
 
   @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
-  })
-  messages?: Message[];
-
-  @Prop({
     required: [true, 'Message date is required'],
     default: Date.now,
   })
