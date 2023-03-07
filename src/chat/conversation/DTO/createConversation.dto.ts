@@ -10,7 +10,6 @@ import {
 } from 'class-validator';
 
 export class CreateConversationDto {
-  // IsDefined, IsInt, IsPositive, Min(1)
   @IsDefined()
   @IsArray()
   @ArrayNotEmpty()

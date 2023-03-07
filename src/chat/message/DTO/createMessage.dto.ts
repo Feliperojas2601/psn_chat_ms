@@ -9,14 +9,12 @@ import {
 } from 'class-validator';
 
 export class CreateMessageDto {
-  // IsDefined, IsInt, IsPositive, Min(1)
   @IsDefined()
   @IsInt()
   @IsPositive()
   @Min(1)
   userId: number;
 
-  // IsDefined, IsString, Minlength(1)
   @IsDefined()
   @IsString()
   @MinLength(1)

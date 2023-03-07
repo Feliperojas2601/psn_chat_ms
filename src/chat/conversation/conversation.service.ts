@@ -28,7 +28,7 @@ export class ConversationService {
       const previousConversationMembers = await this.conversationModel.find({
         membersId: createConversationDto.membersId,
       });
-      if (previousConversationMembers) {
+      if (previousConversationMembers.length > 0) {
         throw new BadRequestException(
           'Previous conversation with those members already exists',
         );
@@ -57,6 +57,14 @@ export class ConversationService {
     deleteUserFromConversationDTO: DeleteUserFromConversationDto,
   ): Promise<Conversation> {
     try {
+      if (
+        deleteUserFromConversationDTO.memberId !=
+        deleteUserFromConversationDTO.userId
+      ) {
+        throw new BadRequestException(
+          'User is not authorized to delete another user from conversation',
+        );
+      }
       const conversationContainsUser = await this.conversationModel.findOne({
         _id: deleteUserFromConversationDTO.conversationId,
         membersId: deleteUserFromConversationDTO.memberId,

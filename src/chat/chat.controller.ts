@@ -20,7 +20,7 @@ export class ChatController {
     return this.conversationService.createConversation(createConversationDto);
   }
 
-  @Post('message')
+  @Post('conversation/message')
   createMessage(@Body() createMessageDto: CreateMessageDto) {
     return this.messageService.createMessage(createMessageDto);
   }
@@ -30,24 +30,40 @@ export class ChatController {
     return this.conversationService.getConversationsByUser(id);
   }
 
-  @Get('message/conversation/:id')
-  getMessagesByConversation(@Param('id', ParseMongoIdPipe) id: string) {
-    return this.messageService.getMessagesByConversation(id);
-  }
-
-  @Delete('conversation/:conversationId/user/:userId')
-  deleteUserFromConversation(
+  @Get('conversation/:conversationId/user/:userId/message')
+  getMessagesByConversation(
     @Param('conversationId', ParseMongoIdPipe) conversationId: string,
-    @Param('userId') memberId: number,
+    @Param('userId') userId: number,
   ) {
-    return this.conversationService.deleteUserFromConversation({
-      memberId,
+    return this.messageService.getMessagesByConversation({
+      userId,
       conversationId,
     });
   }
 
-  @Delete('message/:id')
-  deleteMessage(@Param('id', ParseMongoIdPipe) id: string) {
-    return this.messageService.deleteMessage(id);
+  @Delete('conversation/:conversationId/user/:userId/member/:memberId')
+  deleteUserFromConversation(
+    @Param('conversationId', ParseMongoIdPipe) conversationId: string,
+    @Param('userId') userId: number,
+    @Param('memberId') memberId: number,
+  ) {
+    return this.conversationService.deleteUserFromConversation({
+      memberId,
+      conversationId,
+      userId,
+    });
+  }
+
+  @Delete('conversation/:conversationId/user/:userId/message/:messageId')
+  deleteMessage(
+    @Param('messageId', ParseMongoIdPipe) messageId: string,
+    @Param('userId') userId: number,
+    @Param('conversationId', ParseMongoIdPipe) conversationId: string,
+  ) {
+    return this.messageService.deleteMessage({
+      userId,
+      messageId,
+      conversationId,
+    });
   }
 }
