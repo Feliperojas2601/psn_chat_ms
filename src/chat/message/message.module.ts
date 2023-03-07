@@ -8,6 +8,7 @@ import {
 import { Message, MessageSchema } from './entity/message.entity';
 
 import { MessageService } from './message.service';
+import { MessageSocketGateway } from './message.gateway';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { MessageService } from './message.service';
       { name: Conversation.name, schema: ConversationSchema },
     ]),
   ],
-  providers: [MessageService],
+  providers: [MessageService, MessageSocketGateway],
   exports: [MessageService],
 })
 export class MessageModule {}

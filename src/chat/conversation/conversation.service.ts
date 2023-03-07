@@ -53,7 +53,7 @@ export class ConversationService {
     }
   }
 
-  async deleteUserFromConversation(
+  async deleteConversationByUser(
     deleteUserFromConversationDTO: DeleteUserFromConversationDto,
   ): Promise<Conversation> {
     try {

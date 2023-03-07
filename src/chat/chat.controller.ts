@@ -42,12 +42,12 @@ export class ChatController {
   }
 
   @Delete('conversation/:conversationId/user/:userId/member/:memberId')
-  deleteUserFromConversation(
+  deleteConversationByUser(
     @Param('conversationId', ParseMongoIdPipe) conversationId: string,
     @Param('userId') userId: number,
     @Param('memberId') memberId: number,
   ) {
-    return this.conversationService.deleteUserFromConversation({
+    return this.conversationService.deleteConversationByUser({
       memberId,
       conversationId,
       userId,
