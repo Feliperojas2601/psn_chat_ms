@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -21,6 +25,14 @@ export class ConversationService {
     createConversationDto: CreateConversationDto,
   ): Promise<Conversation> {
     try {
+      const previousConversationMembers = await this.conversationModel.find({
+        membersId: createConversationDto.membersId,
+      });
+      if (previousConversationMembers) {
+        throw new BadRequestException(
+          'Previous conversation with those members already exists',
+        );
+      }
       const conversation = await this.conversationModel.create(
         createConversationDto,
       );
@@ -45,6 +57,15 @@ export class ConversationService {
     deleteUserFromConversationDTO: DeleteUserFromConversationDto,
   ): Promise<Conversation> {
     try {
+      const conversationContainsUser = await this.conversationModel.findOne({
+        _id: deleteUserFromConversationDTO.conversationId,
+        membersId: deleteUserFromConversationDTO.memberId,
+      });
+      if (!conversationContainsUser) {
+        throw new BadRequestException(
+          'User does not belongs to the conversation',
+        );
+      }
       const conversation = await this.conversationModel.findByIdAndUpdate(
         deleteUserFromConversationDTO.conversationId,
         {
@@ -68,6 +89,9 @@ export class ConversationService {
       );
     }*/
     console.log(error);
+    if (error.response.error == 'Bad Request') {
+      throw new BadRequestException(error.response.message);
+    }
     throw new InternalServerErrorException(
       `Unknown error, please contact server Admins`,
     );
