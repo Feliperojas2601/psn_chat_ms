@@ -21,7 +21,7 @@ import { GetMessagesByConversationDto } from './DTO/getMessagesByConversation.dt
   cors: {
     origin: '*',
   },
-  namespace: 'chat',
+  namespace: 'chat/message',
   secure: true,
 })
 export class MessageSocketGateway
@@ -63,7 +63,7 @@ export class MessageSocketGateway
       const message: Message = await this.messageService.createMessage(
         createMessageDto,
       );
-      this.server.to(message.conversationId).emit('MESSAGE_CREATED', message);
+      this.server.to(message.conversationId).emit('CREATED_MESSAGE', message);
     } catch (e) {
       console.error(e.stack);
     }
@@ -78,7 +78,7 @@ export class MessageSocketGateway
       const message: Message = await this.messageService.deleteMessage(
         deleteMessageDto,
       );
-      this.server.to(message.conversationId).emit('MESSAGE_DELETED', message);
+      this.server.to(message.conversationId).emit('DELETED_MESSAGE', message);
     } catch (e) {
       console.error(e.stack);
     }
