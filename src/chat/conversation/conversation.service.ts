@@ -88,14 +88,7 @@ export class ConversationService {
     }
   }
 
-  // Falta el resto de funcionalidades
-
   private handleException(error: any): void {
-    /*if (error.code === 11000) {
-      throw new BadRequestException(
-        `Message already exists in db ${JSON.stringify(error.keyValue)}`,
-      );
-    }*/
     console.log(error);
     if (error.response.error == 'Bad Request') {
       throw new BadRequestException(error.response.message);

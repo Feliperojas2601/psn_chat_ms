@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 
 import { MessageService } from './message/message.service';
 import { ConversationService } from './conversation/conversation.service';
@@ -34,11 +42,17 @@ export class ChatController {
   getMessagesByConversation(
     @Param('conversationId', ParseMongoIdPipe) conversationId: string,
     @Param('userId') userId: number,
+    @Query('limit') limit: number,
+    @Query('offset') offset: number,
   ) {
-    return this.messageService.getMessagesByConversation({
-      userId,
-      conversationId,
-    });
+    const paginationDto = { limit, offset };
+    return this.messageService.getMessagesByConversation(
+      {
+        userId,
+        conversationId,
+      },
+      paginationDto,
+    );
   }
 
   @Delete('conversation/:conversationId/user/:userId/member/:memberId')

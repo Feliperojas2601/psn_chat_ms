@@ -15,6 +15,7 @@ import { Message, MessageDocument } from './entity/message.entity';
 import { CreateMessageDto } from './DTO/createMessage.dto';
 import { GetMessagesByConversationDto } from './DTO/getMessagesByConversation.dto';
 import { DeleteMessageDto } from './DTO/deleteMessage.dto';
+import { PaginationDto } from 'src/common/DTO/pagination.dto';
 
 @Injectable()
 export class MessageService {
@@ -44,8 +45,10 @@ export class MessageService {
 
   async getMessagesByConversation(
     getMessagesByConversationDto: GetMessagesByConversationDto,
+    paginationDto: PaginationDto,
   ): Promise<Message[]> {
     try {
+      const { limit = 50, offset = 0 } = paginationDto;
       const conversationContainsUser = await this.conversationModel.findOne({
         _id: getMessagesByConversationDto.conversationId,
         membersId: getMessagesByConversationDto.userId,
@@ -55,10 +58,13 @@ export class MessageService {
           'User does not belongs to the conversation',
         );
       }
-      const messages = await this.messageModel.find({
-        conversationId: getMessagesByConversationDto.conversationId,
-        active: true,
-      });
+      const messages = await this.messageModel
+        .find({
+          conversationId: getMessagesByConversationDto.conversationId,
+          active: true,
+        })
+        .skip(offset)
+        .limit(limit);
       return messages;
     } catch (error) {
       this.handleException(error);
@@ -99,11 +105,6 @@ export class MessageService {
   }
 
   private handleException(error: any): void {
-    /*if (error.code === 11000) {
-      throw new BadRequestException(
-        `Message already exists in db ${JSON.stringify(error.keyValue)}`,
-      );
-    }*/
     console.log(error);
     if (error.response.error == 'Bad Request') {
       throw new BadRequestException(error.response.message);
