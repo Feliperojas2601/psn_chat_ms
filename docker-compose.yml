@@ -3,7 +3,8 @@ version: '3.7'
 services:
   psn-chat-ms:
     image: psn-chat-ms
+    build: .
     env_file:
       - .env
     ports:
-      - "3002:3002"
+      - "4300:4300"
