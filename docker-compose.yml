@@ -1,10 +1,16 @@
-version: '3.7'
-
+version: '4.17'
 services:
-  psn-chat-ms:
-    image: psn-chat-ms
+  psn-chat-ms-service:
+    image: psn-chat-ms-service
     build: .
+    container_name: psn-chat-ms-service
     env_file:
-      - .env
+      - ./.env
     ports:
       - "4300:4300"
+    networks:
+      - psn_network
+
+networks:
+  psn_network:
+    external: true
