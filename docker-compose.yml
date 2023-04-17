@@ -5,7 +5,7 @@ services:
     build: .
     container_name: psn-chat-ms-service
     env_file:
-      - ./.env
+      - .env
     ports:
       - "4300:4300"
     networks:
